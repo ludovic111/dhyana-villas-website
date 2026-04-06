@@ -70,15 +70,18 @@ export default function GalleryPage() {
         <motion.div className="mt-10 columns-1 gap-4 sm:columns-2 lg:columns-3" layout>
           <AnimatePresence mode="popLayout">
             {filtered.map((image, i) => (
-              <motion.div
+              <motion.button
                 key={image.id}
+                type="button"
                 layoutId={`gallery-${image.id}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, delay: i * 0.03 }}
-                className="group relative mb-4 cursor-pointer overflow-hidden rounded-xl break-inside-avoid"
+                className="group relative mb-4 block w-full cursor-pointer overflow-hidden rounded-xl break-inside-avoid bg-transparent p-0 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-coconut"
                 onClick={() => setLightboxIndex(i)}
+                aria-label={image.alt}
+                aria-haspopup="dialog"
               >
                 <Image
                   src={image.src}
@@ -89,7 +92,7 @@ export default function GalleryPage() {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-jungle/0 transition-colors duration-300 group-hover:bg-jungle/20" />
-              </motion.div>
+              </motion.button>
             ))}
           </AnimatePresence>
         </motion.div>

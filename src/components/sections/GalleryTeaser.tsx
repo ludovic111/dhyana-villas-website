@@ -69,17 +69,20 @@ export default function GalleryTeaser() {
         >
           <AnimatePresence mode="popLayout">
             {displayImages.map((image, i) => (
-              <motion.div
+              <motion.button
                 key={image.id}
+                type="button"
                 layoutId={image.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4, delay: i * 0.05 }}
-                className={`group relative cursor-pointer overflow-hidden rounded-xl ${
+                className={`group relative block w-full cursor-pointer overflow-hidden rounded-xl bg-transparent p-0 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-coconut ${
                   i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
                 }`}
                 onClick={() => setLightboxIndex(i)}
+                aria-label={image.alt}
+                aria-haspopup="dialog"
               >
                 <div
                   className={`relative ${
@@ -104,7 +107,7 @@ export default function GalleryTeaser() {
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </motion.button>
             ))}
           </AnimatePresence>
         </motion.div>

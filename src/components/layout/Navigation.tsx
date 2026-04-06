@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/ui/Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
 
@@ -10,9 +12,17 @@ const navSections = ["about", "villas", "gallery", "experience", "reviews"] as c
 
 export default function Navigation() {
   const t = useTranslations("nav");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [pendingScrollTarget, setPendingScrollTarget] = useState<string | null>(
+    null
+  );
   const { scrollY } = useScroll();
+  const homePath = `/${locale}`;
+  const isHomePage = pathname === homePath;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 80);
@@ -29,12 +39,50 @@ export default function Navigation() {
     };
   }, [mobileOpen]);
 
+  useEffect(() => {
+    if (!pendingScrollTarget || !isHomePage) {
+      return;
+    }
+
+    const target =
+      pendingScrollTarget === "top"
+        ? document.documentElement
+        : document.getElementById(pendingScrollTarget);
+
+    const raf = window.requestAnimationFrame(() => {
+      if (pendingScrollTarget === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        target?.scrollIntoView({ behavior: "smooth" });
+      }
+      setPendingScrollTarget(null);
+    });
+
+    return () => window.cancelAnimationFrame(raf);
+  }, [isHomePage, pendingScrollTarget]);
+
   function scrollToSection(id: string) {
     const el = document.getElementById(id);
-    if (el) {
+    if (isHomePage && el) {
       el.scrollIntoView({ behavior: "smooth" });
       setMobileOpen(false);
+      return;
     }
+
+    setMobileOpen(false);
+    setPendingScrollTarget(id);
+    router.push(`${homePath}#${id}`, { scroll: false });
+  }
+
+  function goHome() {
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
+    setMobileOpen(false);
+    setPendingScrollTarget("top");
+    router.push(homePath, { scroll: false });
   }
 
   return (
@@ -50,7 +98,7 @@ export default function Navigation() {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          <button type="button" onClick={goHome}>
             <Logo variant="light" />
           </button>
 
@@ -59,6 +107,7 @@ export default function Navigation() {
             {navSections.map((section) => (
               <button
                 key={section}
+                type="button"
                 onClick={() => scrollToSection(section)}
                 className="font-body text-sm font-medium text-coconut/80 transition-colors hover:text-gold"
               >
@@ -66,6 +115,7 @@ export default function Navigation() {
               </button>
             ))}
             <button
+              type="button"
               onClick={() => scrollToSection("booking")}
               className="rounded-full bg-gold px-5 py-2 font-body text-sm font-semibold text-white transition-all hover:bg-gold-deep hover:shadow-lg hover:shadow-gold/20"
             >
@@ -76,6 +126,7 @@ export default function Navigation() {
 
           {/* Mobile hamburger */}
           <button
+            type="button"
             className="flex flex-col gap-1.5 md:hidden"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
@@ -107,6 +158,7 @@ export default function Navigation() {
         {navSections.map((section, i) => (
           <motion.button
             key={section}
+            type="button"
             onClick={() => scrollToSection(section)}
             className="font-heading text-2xl text-coconut/90 hover:text-gold transition-colors"
             initial={{ opacity: 0, y: 20 }}
@@ -117,6 +169,7 @@ export default function Navigation() {
           </motion.button>
         ))}
         <motion.button
+          type="button"
           onClick={() => scrollToSection("booking")}
           className="mt-4 rounded-full bg-gold px-8 py-3 font-body text-lg font-semibold text-white"
           initial={{ opacity: 0, y: 20 }}
