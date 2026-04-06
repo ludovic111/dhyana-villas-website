@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "title": "Dhyana Villas | Luxury Boutique Villas in Koh Phangan, Thailand",
+    "description": "Discover tranquility at Dhyana Villas — 3 private pool villas nestled in tropical gardens, steps from Hin Kong Beach, Koh Phangan."
+  },
+  "nav": {
+    "about": "About",
+    "villas": "The Villas",
+    "gallery": "Gallery",
+    "experience": "Experience",
+    "reviews": "Reviews",
+    "book": "Book Now"
+  },
+  "hero": {
+    "tagline": "Where Serenity Meets Paradise",
+    "subtitle": "Private pool villas in the heart of Koh Phangan"
+  },
+  "intro": {
+    "title": "Welcome to Dhyana Villas",
+    "body": "Nestled among lush tropical gardens in Hin Kong, Koh Phangan, Dhyana Villas offers an intimate retreat where contemporary design meets the natural beauty of Thailand. Our three private villas provide the perfect sanctuary for those seeking peace, comfort, and authentic island living.",
+    "hosts": "Your hosts, Jackie & Frank, are dedicated to making your stay unforgettable.",
+    "rating": "Superb",
+    "ratingSource": "Based on 78 reviews on Booking.com"
+  },
+  "villas": {
+    "title": "The Villas",
+    "subtitle": "Three unique havens, each with its own private pool",
+    "specs": {
+      "area": "120 m²",
+      "bedrooms": "2 Bedrooms",
+      "bathrooms": "2 Bathrooms",
+      "pool": "Private Pool",
+      "kitchen": "Full Kitchen",
+      "wifi": "Free WiFi",
+      "ac": "Air Conditioning",
+      "garden": "Garden View"
+    },
+    "cta": "Book This Villa"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Glimpses of paradise",
+    "viewAll": "View All Photos",
+    "categories": {
+      "all": "All",
+      "pool": "Pool",
+      "rooms": "Rooms",
+      "garden": "Garden",
+      "kitchen": "Kitchen",
+      "views": "Views"
+    }
+  },
+  "experience": {
+    "title": "The Experience",
+    "subtitle": "Discover the beauty of Koh Phangan",
+    "beach": "Hin Kong Beach",
+    "beachDesc": "A 4-minute walk from your villa to pristine sands",
+    "waterfall": "Phaeng Waterfall",
+    "waterfallDesc": "Explore the island's most beautiful waterfall, just 4.5 km away",
+    "yoga": "Yoga & Wellness",
+    "yogaDesc": "World-class yoga retreats and wellness centers nearby",
+    "diving": "Diving & Snorkeling",
+    "divingDesc": "Crystal clear waters and vibrant coral reefs to explore",
+    "temples": "Temples",
+    "templesDesc": "Visit sacred temples and immerse in Thai culture",
+    "markets": "Night Markets",
+    "marketsDesc": "Experience authentic Thai street food and local crafts"
+  },
+  "reviews": {
+    "title": "Guest Reviews",
+    "subtitle": "What our guests say",
+    "rating": "9.4",
+    "ratingLabel": "Superb",
+    "source": "Booking.com"
+  },
+  "booking": {
+    "title": "Book Your Stay",
+    "subtitle": "Choose your preferred platform to reserve your villa",
+    "bookingCom": "Book on Booking.com",
+    "agoda": "Book on Agoda",
+    "whatsapp": "Message on WhatsApp",
+    "facebook": "Visit on Facebook"
+  },
+  "footer": {
+    "address": "Moo 6, Hin Kong Road, 84280 Hinkong, Koh Phangan, Thailand",
+    "rights": "All rights reserved.",
+    "tagline": "Your tropical sanctuary awaits"
+  }
+}
