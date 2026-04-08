@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type TargetAndTransition } from "framer-motion";
 import { ReactNode } from "react";
 
 interface AnimatedSectionProps {
@@ -29,23 +29,20 @@ export default function AnimatedSection({
     right: { x: -d },
   };
 
-  const initial: Record<string, unknown> = {
+  const initial: TargetAndTransition = {
     opacity: 0,
     ...directionOffset[direction],
     scale: 0.985,
+    ...(blur ? { filter: "blur(8px)" } : {}),
   };
 
-  const animate: Record<string, unknown> = {
+  const animate: TargetAndTransition = {
     opacity: 1,
     x: 0,
     y: 0,
     scale: 1,
+    ...(blur ? { filter: "blur(0px)" } : {}),
   };
-
-  if (blur) {
-    initial.filter = "blur(8px)";
-    animate.filter = "blur(0px)";
-  }
 
   return (
     <motion.div
