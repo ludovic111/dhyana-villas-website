@@ -140,8 +140,14 @@ export default function Navigation() {
         transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
       >
         <div className="site-frame">
-          <div
-            className={`mx-auto flex items-center gap-4 rounded-[1.7rem] border px-4 py-3 backdrop-blur-2xl md:px-5 ${navTone}`}
+          <motion.div
+            className={`mx-auto flex items-center gap-4 border px-4 backdrop-blur-2xl md:px-5 ${navTone}`}
+            animate={{
+              borderRadius: scrolled ? "1.4rem" : "1.7rem",
+              paddingTop: scrolled ? "0.55rem" : "0.75rem",
+              paddingBottom: scrolled ? "0.55rem" : "0.75rem",
+            }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
             <button
               type="button"
@@ -160,13 +166,23 @@ export default function Navigation() {
                     key={section}
                     type="button"
                     onClick={() => scrollToSection(section)}
-                    className={`rounded-full px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] ${
+                    className={`relative rounded-full px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] ${
                       active
-                        ? "bg-coconut/12 text-coconut"
-                        : "text-coconut/58 hover:bg-coconut/8 hover:text-coconut"
+                        ? "text-coconut"
+                        : "text-coconut/58 hover:text-coconut"
                     }`}
                   >
                     {t(section)}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-dot"
+                        className="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-gold"
+                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                      />
+                    )}
+                    {!active && (
+                      <span className="absolute bottom-0 left-1/2 h-px w-0 -translate-x-1/2 bg-coconut/30 transition-all duration-300 ease-out group-hover:w-4" />
+                    )}
                   </button>
                 );
               })}
@@ -181,7 +197,7 @@ export default function Navigation() {
               <button
                 type="button"
                 onClick={() => scrollToSection("booking")}
-                className="cta-primary metal-button px-5 py-3 text-[0.7rem]"
+                className="cta-primary metal-button book-pulse px-5 py-3 text-[0.7rem]"
               >
                 {t("book")}
               </button>
@@ -209,7 +225,17 @@ export default function Navigation() {
                 />
               </div>
             </button>
-          </div>
+
+            {/* Gold accent line on scroll */}
+            <motion.div
+              className="absolute bottom-0 left-4 right-4 h-px"
+              style={{
+                background: "linear-gradient(90deg, transparent, rgba(199, 162, 99, 0.3), transparent)",
+              }}
+              animate={{ opacity: scrolled ? 1 : 0 }}
+              transition={{ duration: 0.3 }}
+            />
+          </motion.div>
         </div>
       </motion.header>
 
@@ -251,9 +277,9 @@ export default function Navigation() {
                       ? "bg-coconut/10 text-coconut"
                       : "text-coconut/72 hover:bg-coconut/6 hover:text-coconut"
                   }`}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-                  transition={{ delay: 0.06 + index * 0.04 }}
+                  initial={{ opacity: 0, x: -12, y: 18 }}
+                  animate={mobileOpen ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: -12, y: 18 }}
+                  transition={{ delay: 0.06 + index * 0.06 }}
                 >
                   <span className="font-heading text-2xl">{t(section)}</span>
                   <FeatureGlyph name="arrow" className="h-4 w-4" />
@@ -268,7 +294,7 @@ export default function Navigation() {
             className="cta-primary metal-button mt-6 w-full justify-between px-5 py-4 text-[0.72rem]"
             initial={{ opacity: 0, y: 18 }}
             animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
-            transition={{ delay: 0.28 }}
+            transition={{ delay: 0.32 }}
           >
             <span>{t("book")}</span>
             <FeatureGlyph name="arrow" className="h-4 w-4" />

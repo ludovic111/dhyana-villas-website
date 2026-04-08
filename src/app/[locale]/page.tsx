@@ -6,6 +6,7 @@ import GalleryTeaser from "@/components/sections/GalleryTeaser";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import ReviewsSection from "@/components/sections/ReviewsSection";
 import BookingSection from "@/components/sections/BookingSection";
+import SectionDivider from "@/components/ui/SectionDivider";
 
 export default async function HomePage({
   params,
@@ -18,9 +19,13 @@ export default async function HomePage({
   return (
     <>
       <HeroSection />
+      <SectionDivider variant="muted" />
       <IntroSection />
+      <SectionDivider variant="gold" />
       <VillasSection />
+      <SectionDivider variant="muted" />
       <GalleryTeaser />
+      <SectionDivider variant="gold" />
       <ExperienceSection />
       <ReviewsSection />
       <BookingSection />

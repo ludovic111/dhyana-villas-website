@@ -4,6 +4,7 @@ import { locales } from "@/i18n/config";
 import Navigation from "@/components/layout/Navigation";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/layout/SmoothScroll";
+import ScrollProgress from "@/components/ui/ScrollProgress";
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -26,6 +27,7 @@ export default async function LocaleLayout({
         <a href="#main-content" className="skip-link">
           Skip to content
         </a>
+        <ScrollProgress />
         <Navigation />
         <main id="main-content">{children}</main>
         <Footer />

@@ -62,13 +62,20 @@ export default function GalleryTeaser() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setActiveCategory(category)}
-                    className={`rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${
+                    className={`relative rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${
                       active
-                        ? "bg-jungle text-coconut"
+                        ? "text-coconut"
                         : "bg-sand/70 text-drift hover:bg-jungle-light/10 hover:text-jungle"
                     }`}
                   >
-                    {t(`categories.${category}`)}
+                    {active && (
+                      <motion.span
+                        layoutId="gallery-tab"
+                        className="absolute inset-0 rounded-full bg-jungle"
+                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                      />
+                    )}
+                    <span className="relative z-10">{t(`categories.${category}`)}</span>
                   </button>
                 );
               })}
@@ -81,7 +88,7 @@ export default function GalleryTeaser() {
         </div>
 
         <motion.div
-          className="mt-12 grid auto-rows-[15rem] gap-4 md:grid-cols-12 md:auto-rows-[11rem]"
+          className="mt-12 grid auto-rows-[15rem] gap-4 md:grid-cols-12 md:auto-rows-[13rem]"
           layout
         >
           <AnimatePresence mode="popLayout">
@@ -92,12 +99,12 @@ export default function GalleryTeaser() {
                 layout
                 initial={{ opacity: 0, y: 24, scale: 0.985 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 14, scale: 0.98 }}
+                exit={{ opacity: 0, y: 14, scale: 0.98, filter: "blur(4px)" }}
                 transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
                 whileHover={{ y: -4 }}
                 whileTap={{ scale: 0.99 }}
                 onClick={() => setLightboxIndex(index)}
-                className={`group relative overflow-hidden rounded-[2rem] border border-white/60 bg-coconut shadow-[0_22px_70px_rgba(17,26,23,0.12)] ${
+                className={`glow-ring group relative overflow-hidden rounded-[2rem] border border-white/60 bg-coconut shadow-[0_22px_70px_rgba(17,26,23,0.12)] ${
                   galleryLayout[index] ?? "md:col-span-6"
                 }`}
               >
@@ -106,7 +113,7 @@ export default function GalleryTeaser() {
                   alt={image.alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-cover transition-all duration-1000 group-hover:scale-[1.03] group-hover:brightness-105"
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,20,17,0.04)_0%,rgba(12,20,17,0.16)_55%,rgba(12,20,17,0.72)_100%)]" />
                 <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
@@ -130,7 +137,12 @@ export default function GalleryTeaser() {
         <AnimatedSection className="mt-10 flex justify-center" delay={0.16}>
           <Link href={`/${locale}/gallery`} className="ghost-link">
             <span>{t("viewAll")}</span>
-            <FeatureGlyph name="arrow" className="h-4 w-4" />
+            <motion.span
+              animate={{ x: [0, 4, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <FeatureGlyph name="arrow" className="h-4 w-4" />
+            </motion.span>
           </Link>
         </AnimatedSection>
       </div>

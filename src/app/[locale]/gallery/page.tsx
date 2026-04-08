@@ -50,13 +50,23 @@ export default function GalleryPage() {
         </Link>
 
         <div className="mt-8 grid gap-10 xl:grid-cols-[0.86fr_1.14fr] xl:items-end">
-          <div className="max-w-3xl">
+          <motion.div
+            className="max-w-3xl"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.72, ease: [0.23, 1, 0.32, 1] }}
+          >
             <span className="eyebrow">{t("title")}</span>
             <h1 className="section-title mt-6">{t("title")}</h1>
             <p className="section-copy mt-6">{t("subtitle")}</p>
-          </div>
+          </motion.div>
 
-          <div className="surface-panel rounded-[2rem] p-4">
+          <motion.div
+            className="surface-panel rounded-[2rem] p-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+          >
             <div className="flex flex-wrap items-center gap-2">
               {categories.map((category) => {
                 const active = activeCategory === category;
@@ -66,23 +76,30 @@ export default function GalleryPage() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setActiveCategory(category)}
-                    className={`rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${
+                    className={`relative rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${
                       active
-                        ? "bg-jungle text-coconut"
+                        ? "text-coconut"
                         : "bg-sand/70 text-drift hover:bg-jungle-light/10 hover:text-jungle"
                     }`}
                   >
-                    {t(`categories.${category}`)}
+                    {active && (
+                      <motion.span
+                        layoutId="gallery-page-tab"
+                        className="absolute inset-0 rounded-full bg-jungle"
+                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
+                      />
+                    )}
+                    <span className="relative z-10">{t(`categories.${category}`)}</span>
                   </button>
                 );
               })}
 
               <span className="ml-auto hidden items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-drift/58 sm:inline-flex">
                 <FeatureGlyph name="spark" className="h-3.5 w-3.5" />
-                Full property archive
+                {filtered.length} photos
               </span>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         <motion.div className="mt-12 columns-1 gap-5 md:columns-2 xl:columns-3" layout>
@@ -94,11 +111,11 @@ export default function GalleryPage() {
                 layout
                 initial={{ opacity: 0, y: 20, scale: 0.985 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                exit={{ opacity: 0, y: 10, scale: 0.98, filter: "blur(4px)" }}
                 transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-                whileHover={{ y: -4 }}
+                whileHover={{ y: -3, scale: 1.005 }}
                 whileTap={{ scale: 0.99 }}
-                className="group relative mb-5 block w-full overflow-hidden rounded-[2rem] border border-white/60 bg-coconut text-left shadow-[0_22px_70px_rgba(17,26,23,0.12)]"
+                className="glow-ring group relative mb-5 block w-full overflow-hidden rounded-[2rem] border border-white/60 bg-coconut text-left shadow-[0_22px_70px_rgba(17,26,23,0.12)]"
                 onClick={() => setLightboxIndex(index)}
               >
                 <div className="relative min-h-[18rem] overflow-hidden">
@@ -107,7 +124,7 @@ export default function GalleryPage() {
                     alt={image.alt}
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover transition-all duration-1000 group-hover:scale-[1.03] group-hover:brightness-105"
                   />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,20,17,0.04)_0%,rgba(12,20,17,0.18)_60%,rgba(12,20,17,0.74)_100%)]" />
                   <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">

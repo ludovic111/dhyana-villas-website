@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import FeatureGlyph from "@/components/ui/FeatureGlyph";
@@ -23,12 +23,22 @@ export default function LightboxModal({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
+  const [direction, setDirection] = useState(0);
+
+  function navigate(newIndex: number) {
+    setDirection(newIndex > currentIndex ? 1 : -1);
+    onNavigate(newIndex);
+  }
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
-      if (event.key === "ArrowLeft" && currentIndex > 0) onNavigate(currentIndex - 1);
+      if (event.key === "ArrowLeft" && currentIndex > 0) {
+        setDirection(-1);
+        onNavigate(currentIndex - 1);
+      }
       if (event.key === "ArrowRight" && currentIndex < images.length - 1) {
+        setDirection(1);
         onNavigate(currentIndex + 1);
       }
 
@@ -73,32 +83,34 @@ export default function LightboxModal({
     };
   }, [handleKeyDown]);
 
+  const variants = {
+    enter: { x: direction * 60, opacity: 0, scale: 0.97 },
+    center: { x: 0, opacity: 1, scale: 1 },
+    exit: { x: direction * -60, opacity: 0, scale: 0.97 },
+  };
+
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-[linear-gradient(180deg,rgba(7,18,13,0.88),rgba(7,18,13,0.96))] px-4 py-6 backdrop-blur-xl"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-[linear-gradient(180deg,rgba(7,18,13,0.88),rgba(7,18,13,0.96))] px-4 py-6 backdrop-blur-2xl"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
+        transition={{ duration: 0.4 }}
         onClick={onClose}
         role="presentation"
       >
-        <motion.div
+        <div
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={image.alt}
-          key={image.id}
           className="relative w-full max-w-[min(96vw,1180px)]"
-          initial={{ opacity: 0, y: 18, scale: 0.985 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 12, scale: 0.985 }}
-          transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
           onClick={(event) => event.stopPropagation()}
         >
           <div className="surface-dark overflow-hidden rounded-[2.2rem] p-3">
             <div className="flex items-center justify-between gap-3 pb-3">
-              <span className="rounded-full border border-coconut/10 bg-coconut/8 px-3 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-coconut/64">
+              <span className="rounded-full border border-coconut/10 bg-coconut/8 px-3 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-gold/80">
                 {currentIndex + 1} / {images.length}
               </span>
 
@@ -106,8 +118,8 @@ export default function LightboxModal({
                 {currentIndex > 0 && (
                   <button
                     type="button"
-                    className="rounded-full border border-coconut/10 bg-coconut/8 p-3 text-coconut hover:bg-coconut/14"
-                    onClick={() => onNavigate(currentIndex - 1)}
+                    className="rounded-full border border-coconut/10 bg-coconut/8 p-3.5 text-coconut transition-colors duration-200 hover:border-gold/30 hover:bg-coconut/14"
+                    onClick={() => navigate(currentIndex - 1)}
                     aria-label="Previous"
                   >
                     <svg
@@ -128,8 +140,8 @@ export default function LightboxModal({
                 {currentIndex < images.length - 1 && (
                   <button
                     type="button"
-                    className="rounded-full border border-coconut/10 bg-coconut/8 p-3 text-coconut hover:bg-coconut/14"
-                    onClick={() => onNavigate(currentIndex + 1)}
+                    className="rounded-full border border-coconut/10 bg-coconut/8 p-3.5 text-coconut transition-colors duration-200 hover:border-gold/30 hover:bg-coconut/14"
+                    onClick={() => navigate(currentIndex + 1)}
                     aria-label="Next"
                   >
                     <FeatureGlyph name="arrow" className="h-5 w-5" />
@@ -139,7 +151,7 @@ export default function LightboxModal({
                 <button
                   ref={closeButtonRef}
                   type="button"
-                  className="rounded-full border border-coconut/10 bg-coconut/8 p-3 text-coconut hover:bg-coconut/14"
+                  className="rounded-full border border-coconut/10 bg-coconut/8 p-3.5 text-coconut transition-colors duration-200 hover:border-gold/30 hover:bg-coconut/14"
                   onClick={onClose}
                   aria-label="Close"
                 >
@@ -158,22 +170,32 @@ export default function LightboxModal({
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-[1.7rem] border border-coconut/10 bg-black/20">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                width={image.width}
-                height={image.height}
-                sizes="96vw"
-                className="max-h-[78vh] w-full object-contain"
-              />
-            </div>
+            <AnimatePresence mode="popLayout" custom={direction}>
+              <motion.div
+                key={image.id}
+                className="relative overflow-hidden rounded-[1.7rem] border border-coconut/10 bg-black/20"
+                variants={variants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  width={image.width}
+                  height={image.height}
+                  sizes="96vw"
+                  className="max-h-[78vh] w-full object-contain"
+                />
+              </motion.div>
+            </AnimatePresence>
 
             <div className="mt-3 rounded-[1.6rem] border border-coconut/10 bg-coconut/[0.05] px-4 py-3 text-sm leading-relaxed text-coconut/74">
               {image.alt}
             </div>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </AnimatePresence>
   );

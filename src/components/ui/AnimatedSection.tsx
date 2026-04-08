@@ -8,6 +8,8 @@ interface AnimatedSectionProps {
   className?: string;
   delay?: number;
   direction?: "up" | "down" | "left" | "right";
+  blur?: boolean;
+  distance?: number;
 }
 
 export default function AnimatedSection({
@@ -15,25 +17,48 @@ export default function AnimatedSection({
   className = "",
   delay = 0,
   direction = "up",
+  blur = false,
+  distance,
 }: AnimatedSectionProps) {
+  const d = distance ?? (direction === "left" || direction === "right" ? 32 : 28);
+
   const directionOffset = {
-    up: { y: 28 },
-    down: { y: -28 },
-    left: { x: 32 },
-    right: { x: -32 },
+    up: { y: d },
+    down: { y: -d },
+    left: { x: d },
+    right: { x: -d },
   };
+
+  const initial: Record<string, unknown> = {
+    opacity: 0,
+    ...directionOffset[direction],
+    scale: 0.985,
+  };
+
+  const animate: Record<string, unknown> = {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+  };
+
+  if (blur) {
+    initial.filter = "blur(8px)";
+    animate.filter = "blur(0px)";
+  }
 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, ...directionOffset[direction], scale: 0.985 }}
-      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+      initial={initial}
+      whileInView={animate}
       viewport={{ once: true, margin: "-12% 0px" }}
       transition={{
         duration: 0.82,
         delay,
         ease: [0.23, 1, 0.32, 1],
       }}
+      {...(blur ? { style: { willChange: "transform, opacity, filter" } } : {})}
     >
       {children}
     </motion.div>
