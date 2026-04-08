@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { playfair, inter, cormorant } from "@/styles/fonts";
+import {
+  cormorant,
+  manrope,
+  marcellus,
+  notoSansThai,
+  notoSerifThai,
+} from "@/styles/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,10 +29,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${playfair.variable} ${inter.variable} ${cormorant.variable}`}
+      className={`${marcellus.variable} ${manrope.variable} ${cormorant.variable} ${notoSansThai.variable} ${notoSerifThai.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-silk text-drift antialiased">
+      <body className="min-h-[100dvh] bg-silk text-drift antialiased">
         {children}
       </body>
     </html>

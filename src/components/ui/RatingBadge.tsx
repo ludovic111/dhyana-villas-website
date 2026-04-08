@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import FeatureGlyph from "@/components/ui/FeatureGlyph";
 
 interface RatingBadgeProps {
   rating: string;
@@ -17,20 +18,27 @@ export default function RatingBadge({
 }: RatingBadgeProps) {
   return (
     <motion.div
-      className={`inline-flex items-center gap-3 rounded-2xl bg-coconut px-5 py-3 shadow-md ${className}`}
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
+      className={`surface-panel inline-flex items-center gap-4 rounded-[1.8rem] px-5 py-4 ${className}`}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: 0.3 }}
+      transition={{ duration: 0.72, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-jungle-light text-white font-heading text-lg font-bold">
-        {rating}
+      <div className="flex h-14 w-14 items-center justify-center rounded-[1.2rem] bg-jungle text-coconut shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]">
+        <span className="font-heading text-xl font-semibold">{rating}</span>
       </div>
-      <div>
-        <p className="font-heading text-sm font-semibold text-volcanic">
+      <div className="space-y-1 text-left">
+        <p className="font-body text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-gold-deep">
           {label}
         </p>
-        <p className="text-xs text-drift">{source}</p>
+        <p className="font-heading text-lg font-semibold text-volcanic">{source}</p>
+      </div>
+      <div className="hidden h-10 w-px bg-jungle/10 sm:block" />
+      <div className="hidden items-center gap-2 rounded-full border border-jungle/8 bg-jungle/[0.03] px-3 py-2 text-jungle-light sm:inline-flex">
+        <FeatureGlyph name="score" className="h-4 w-4" />
+        <span className="text-[0.68rem] font-semibold uppercase tracking-[0.24em]">
+          Guest score
+        </span>
       </div>
     </motion.div>
   );

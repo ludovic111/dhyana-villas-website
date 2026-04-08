@@ -1,14 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
-import AnimatedSection from "@/components/ui/AnimatedSection";
-import LightboxModal from "@/components/gallery/LightboxModal";
-import { featuredImages, galleryImages, type GalleryCategory } from "@/data/gallery";
 import Link from "next/link";
-import { useLocale } from "next-intl";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
+import AnimatedSection from "@/components/ui/AnimatedSection";
+import SectionIntro from "@/components/ui/SectionIntro";
+import FeatureGlyph from "@/components/ui/FeatureGlyph";
+import LightboxModal from "@/components/gallery/LightboxModal";
+import {
+  featuredImages,
+  galleryImages,
+  type GalleryCategory,
+} from "@/data/gallery";
 
 const categories: (GalleryCategory | "all")[] = [
   "all",
@@ -19,12 +24,19 @@ const categories: (GalleryCategory | "all")[] = [
   "views",
 ];
 
+const galleryLayout = [
+  "md:col-span-7 md:row-span-2",
+  "md:col-span-5",
+  "md:col-span-5",
+  "md:col-span-7",
+  "md:col-span-4",
+  "md:col-span-8",
+];
+
 export default function GalleryTeaser() {
   const t = useTranslations("gallery");
   const locale = useLocale();
-  const [activeCategory, setActiveCategory] = useState<
-    GalleryCategory | "all"
-  >("all");
+  const [activeCategory, setActiveCategory] = useState<GalleryCategory | "all">("all");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const filtered =
@@ -32,111 +44,97 @@ export default function GalleryTeaser() {
       ? featuredImages
       : galleryImages.filter((img) => img.category === activeCategory);
 
-  const displayImages = filtered.slice(0, 8);
+  const displayImages = filtered.slice(0, 6);
 
   return (
-    <section id="gallery" className="bg-coconut py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <AnimatedSection className="text-center">
-          <h2 className="font-heading text-3xl font-bold text-volcanic sm:text-4xl md:text-5xl">
-            {t("title")}
-          </h2>
-          <p className="mt-4 font-accent text-xl text-drift">{t("subtitle")}</p>
-          <div className="mx-auto mt-6 h-px w-16 bg-gold" />
-        </AnimatedSection>
+    <section id="gallery" className="section-shell">
+      <div className="site-frame">
+        <div className="grid gap-10 xl:grid-cols-[0.84fr_1.16fr] xl:items-end">
+          <SectionIntro label={t("title")} title={t("title")} body={t("subtitle")} />
 
-        {/* Category filter */}
-        <AnimatedSection delay={0.15} className="mt-10 flex flex-wrap justify-center gap-2">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${
-                activeCategory === cat
-                  ? "bg-jungle-light text-coconut shadow-md"
-                  : "bg-sand text-drift hover:bg-jungle-light/10"
-              }`}
-            >
-              {t(`categories.${cat}`)}
-            </button>
-          ))}
-        </AnimatedSection>
+          <AnimatedSection className="surface-panel rounded-[2rem] p-4" delay={0.08}>
+            <div className="flex flex-wrap items-center gap-2">
+              {categories.map((category) => {
+                const active = activeCategory === category;
+                return (
+                  <button
+                    key={category}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setActiveCategory(category)}
+                    className={`rounded-full px-4 py-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] ${
+                      active
+                        ? "bg-jungle text-coconut"
+                        : "bg-sand/70 text-drift hover:bg-jungle-light/10 hover:text-jungle"
+                    }`}
+                  >
+                    {t(`categories.${category}`)}
+                  </button>
+                );
+              })}
+              <span className="ml-auto hidden items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-drift/58 sm:inline-flex">
+                <FeatureGlyph name="spark" className="h-3.5 w-3.5" />
+                Open any frame
+              </span>
+            </div>
+          </AnimatedSection>
+        </div>
 
-        {/* Image grid */}
         <motion.div
-          className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          className="mt-12 grid auto-rows-[15rem] gap-4 md:grid-cols-12 md:auto-rows-[11rem]"
           layout
         >
           <AnimatePresence mode="popLayout">
-            {displayImages.map((image, i) => (
+            {displayImages.map((image, index) => (
               <motion.button
                 key={image.id}
                 type="button"
-                layoutId={image.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: i * 0.05 }}
-                className={`group relative block w-full cursor-pointer overflow-hidden rounded-xl bg-transparent p-0 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-coconut ${
-                  i === 0 ? "sm:col-span-2 sm:row-span-2" : ""
+                layout
+                initial={{ opacity: 0, y: 24, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 14, scale: 0.98 }}
+                transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
+                whileHover={{ y: -4 }}
+                whileTap={{ scale: 0.99 }}
+                onClick={() => setLightboxIndex(index)}
+                className={`group relative overflow-hidden rounded-[2rem] border border-white/60 bg-coconut shadow-[0_22px_70px_rgba(17,26,23,0.12)] ${
+                  galleryLayout[index] ?? "md:col-span-6"
                 }`}
-                onClick={() => setLightboxIndex(i)}
-                aria-label={image.alt}
-                aria-haspopup="dialog"
               >
-                <div
-                  className={`relative ${
-                    i === 0 ? "h-64 sm:h-full min-h-[300px]" : "h-48 sm:h-56"
-                  }`}
-                >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes={
-                      i === 0
-                        ? "(max-width: 640px) 100vw, 50vw"
-                        : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    }
-                  />
-                  <div className="absolute inset-0 bg-jungle/0 transition-colors duration-300 group-hover:bg-jungle/30" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    <span className="rounded-full bg-coconut/90 px-4 py-2 text-sm font-medium text-jungle">
-                      View
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,20,17,0.04)_0%,rgba(12,20,17,0.16)_55%,rgba(12,20,17,0.72)_100%)]" />
+                <div className="absolute inset-x-4 bottom-4 flex items-end justify-between gap-3">
+                  <div className="max-w-[80%]">
+                    <span className="inline-flex rounded-full border border-coconut/10 bg-coconut/82 px-3 py-1 text-[0.64rem] font-semibold uppercase tracking-[0.2em] text-jungle-light">
+                      {t(`categories.${image.category}`)}
                     </span>
+                    <p className="mt-3 text-left text-sm leading-relaxed text-coconut">
+                      {image.alt}
+                    </p>
                   </div>
+                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-coconut/12 bg-coconut/12 text-coconut backdrop-blur-md">
+                    <FeatureGlyph name="arrow" className="h-4 w-4" />
+                  </span>
                 </div>
               </motion.button>
             ))}
           </AnimatePresence>
         </motion.div>
 
-        {/* View all link */}
-        <AnimatedSection delay={0.3} className="mt-10 text-center">
-          <Link
-            href={`/${locale}/gallery`}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-gold px-8 py-3 font-body text-base font-semibold text-gold transition-all hover:bg-gold hover:text-coconut"
-          >
-            {t("viewAll")}
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
+        <AnimatedSection className="mt-10 flex justify-center" delay={0.16}>
+          <Link href={`/${locale}/gallery`} className="ghost-link">
+            <span>{t("viewAll")}</span>
+            <FeatureGlyph name="arrow" className="h-4 w-4" />
           </Link>
         </AnimatedSection>
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && (
         <LightboxModal
           images={displayImages}

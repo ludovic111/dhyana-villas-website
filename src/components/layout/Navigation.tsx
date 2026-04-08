@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
+import { useEffect, useMemo, useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "@/components/ui/Logo";
+import FeatureGlyph from "@/components/ui/FeatureGlyph";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-const navSections = ["about", "villas", "gallery", "experience", "reviews"] as const;
+const navSections = [
+  "about",
+  "villas",
+  "gallery",
+  "experience",
+  "reviews",
+] as const;
 
 export default function Navigation() {
   const t = useTranslations("nav");
@@ -17,15 +23,16 @@ export default function Navigation() {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [pendingScrollTarget, setPendingScrollTarget] = useState<string | null>(
-    null
-  );
+  const [pendingScrollTarget, setPendingScrollTarget] = useState<string | null>(null);
+  const [activeSection, setActiveSection] = useState<string>("about");
   const { scrollY } = useScroll();
+
   const homePath = `/${locale}`;
   const isHomePage = pathname === homePath;
+  const isGalleryPage = pathname === `/${locale}/gallery`;
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 80);
+    setScrolled(latest > 40);
   });
 
   useEffect(() => {
@@ -34,6 +41,7 @@ export default function Navigation() {
     } else {
       document.body.style.overflow = "";
     }
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -44,16 +52,13 @@ export default function Navigation() {
       return;
     }
 
-    const target =
-      pendingScrollTarget === "top"
-        ? document.documentElement
-        : document.getElementById(pendingScrollTarget);
-
     const raf = window.requestAnimationFrame(() => {
       if (pendingScrollTarget === "top") {
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        target?.scrollIntoView({ behavior: "smooth" });
+        document
+          .getElementById(pendingScrollTarget)
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
       }
       setPendingScrollTarget(null);
     });
@@ -61,10 +66,42 @@ export default function Navigation() {
     return () => window.cancelAnimationFrame(raf);
   }, [isHomePage, pendingScrollTarget]);
 
+  useEffect(() => {
+    if (!isHomePage) {
+      return;
+    }
+
+    const sectionElements = navSections
+      .map((id) => document.getElementById(id))
+      .filter(Boolean) as HTMLElement[];
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (visible[0]?.target.id) {
+          setActiveSection(visible[0].target.id);
+        }
+      },
+      {
+        rootMargin: "-30% 0px -45% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.65],
+      }
+    );
+
+    sectionElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, [isHomePage]);
+
+  const selectedSection = isGalleryPage ? "gallery" : activeSection;
+
   function scrollToSection(id: string) {
     const el = document.getElementById(id);
     if (isHomePage && el) {
-      el.scrollIntoView({ behavior: "smooth" });
+      setActiveSection(id);
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
       setMobileOpen(false);
       return;
     }
@@ -77,6 +114,7 @@ export default function Navigation() {
   function goHome() {
     if (isHomePage) {
       window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("about");
       return;
     }
 
@@ -85,100 +123,157 @@ export default function Navigation() {
     router.push(homePath, { scroll: false });
   }
 
+  const navTone = useMemo(
+    () =>
+      scrolled || mobileOpen || !isHomePage
+        ? "border-coconut/14 bg-nocturne/78 shadow-[0_24px_80px_rgba(0,0,0,0.28)]"
+        : "border-coconut/10 bg-nocturne/48 shadow-[0_18px_45px_rgba(0,0,0,0.18)]",
+    [isHomePage, mobileOpen, scrolled]
+  );
+
   return (
     <>
       <motion.header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? "bg-jungle/95 backdrop-blur-md shadow-lg"
-            : "bg-transparent"
-        }`}
-        initial={{ y: -100 }}
+        className="fixed inset-x-0 top-0 z-50 pt-4"
+        initial={{ y: -96 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.65, ease: [0.23, 1, 0.32, 1] }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <button type="button" onClick={goHome}>
-            <Logo variant="light" />
-          </button>
-
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 md:flex">
-            {navSections.map((section) => (
-              <button
-                key={section}
-                type="button"
-                onClick={() => scrollToSection(section)}
-                className="font-body text-sm font-medium text-coconut/80 transition-colors hover:text-gold"
-              >
-                {t(section)}
-              </button>
-            ))}
+        <div className="site-frame">
+          <div
+            className={`mx-auto flex items-center gap-4 rounded-[1.7rem] border px-4 py-3 backdrop-blur-2xl md:px-5 ${navTone}`}
+          >
             <button
               type="button"
-              onClick={() => scrollToSection("booking")}
-              className="rounded-full bg-gold px-5 py-2 font-body text-sm font-semibold text-white transition-all hover:bg-gold-deep hover:shadow-lg hover:shadow-gold/20"
+              onClick={goHome}
+              className="rounded-full p-1 text-left"
+              aria-label="Go to homepage"
             >
-              {t("book")}
+              <Logo variant="light" />
             </button>
-            <LanguageSwitcher variant="light" />
-          </nav>
 
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            className="flex flex-col gap-1.5 md:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            <motion.span
-              className="block h-0.5 w-6 bg-coconut"
-              animate={mobileOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-            />
-            <motion.span
-              className="block h-0.5 w-6 bg-coconut"
-              animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
-            />
-            <motion.span
-              className="block h-0.5 w-6 bg-coconut"
-              animate={mobileOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-            />
-          </button>
+            <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
+              {navSections.map((section) => {
+                const active = selectedSection === section;
+                return (
+                  <button
+                    key={section}
+                    type="button"
+                    onClick={() => scrollToSection(section)}
+                    className={`rounded-full px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.2em] ${
+                      active
+                        ? "bg-coconut/12 text-coconut"
+                        : "text-coconut/58 hover:bg-coconut/8 hover:text-coconut"
+                    }`}
+                  >
+                    {t(section)}
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="ml-auto hidden items-center gap-3 lg:flex">
+              <span className="inline-flex items-center gap-2 rounded-full border border-coconut/12 bg-coconut/8 px-3 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-coconut/62">
+                <FeatureGlyph name="location" className="h-3.5 w-3.5" />
+                <span>{isGalleryPage ? "Photo journal" : "Hin Kong"}</span>
+              </span>
+              <LanguageSwitcher variant="light" />
+              <button
+                type="button"
+                onClick={() => scrollToSection("booking")}
+                className="cta-primary metal-button px-5 py-3 text-[0.7rem]"
+              >
+                {t("book")}
+              </button>
+            </div>
+
+            <button
+              type="button"
+              className="ml-auto flex h-12 w-12 items-center justify-center rounded-full border border-coconut/14 bg-coconut/8 text-coconut md:hidden"
+              onClick={() => setMobileOpen((open) => !open)}
+              aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
+            >
+              <div className="flex flex-col gap-1.5">
+                <motion.span
+                  className="block h-0.5 w-5 bg-current"
+                  animate={mobileOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+                />
+                <motion.span
+                  className="block h-0.5 w-5 bg-current"
+                  animate={mobileOpen ? { opacity: 0 } : { opacity: 1 }}
+                />
+                <motion.span
+                  className="block h-0.5 w-5 bg-current"
+                  animate={mobileOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+                />
+              </div>
+            </button>
+          </div>
         </div>
       </motion.header>
 
-      {/* Mobile menu overlay */}
       <motion.div
-        className="fixed inset-0 z-40 bg-jungle flex flex-col items-center justify-center gap-8 md:hidden"
-        initial={{ opacity: 0, x: "100%" }}
-        animate={mobileOpen ? { opacity: 1, x: 0 } : { opacity: 0, x: "100%" }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-        style={{ pointerEvents: mobileOpen ? "auto" : "none" }}
+        className="fixed inset-0 z-40 md:hidden"
+        initial={{ opacity: 0, pointerEvents: "none" }}
+        animate={
+          mobileOpen
+            ? { opacity: 1, pointerEvents: "auto" }
+            : { opacity: 0, pointerEvents: "none" }
+        }
       >
-        {navSections.map((section, i) => (
-          <motion.button
-            key={section}
-            type="button"
-            onClick={() => scrollToSection(section)}
-            className="font-heading text-2xl text-coconut/90 hover:text-gold transition-colors"
-            initial={{ opacity: 0, y: 20 }}
-            animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ delay: 0.1 + i * 0.05 }}
-          >
-            {t(section)}
-          </motion.button>
-        ))}
-        <motion.button
-          type="button"
-          onClick={() => scrollToSection("booking")}
-          className="mt-4 rounded-full bg-gold px-8 py-3 font-body text-lg font-semibold text-white"
-          initial={{ opacity: 0, y: 20 }}
-          animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ delay: 0.4 }}
+        <div
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,13,0.9),rgba(7,18,13,0.96))]"
+          onClick={() => setMobileOpen(false)}
+        />
+        <motion.div
+          className="absolute inset-x-4 top-[5.5rem] overflow-hidden rounded-[2rem] border border-coconut/14 bg-nocturne/92 p-5 shadow-[0_28px_90px_rgba(0,0,0,0.3)] backdrop-blur-2xl"
+          initial={{ y: -24, opacity: 0, scale: 0.98 }}
+          animate={mobileOpen ? { y: 0, opacity: 1, scale: 1 } : { y: -24, opacity: 0, scale: 0.98 }}
+          transition={{ duration: 0.28, ease: [0.23, 1, 0.32, 1] }}
         >
-          {t("book")}
-        </motion.button>
-        <LanguageSwitcher variant="light" />
+          <div className="flex items-center justify-between border-b border-coconut/10 pb-4">
+            <Logo variant="light" />
+            <LanguageSwitcher variant="light" />
+          </div>
+
+          <div className="mt-5 flex flex-col gap-2">
+            {navSections.map((section, index) => {
+              const active = selectedSection === section;
+
+              return (
+                <motion.button
+                  key={section}
+                  type="button"
+                  onClick={() => scrollToSection(section)}
+                  className={`flex items-center justify-between rounded-[1.35rem] px-4 py-4 text-left ${
+                    active
+                      ? "bg-coconut/10 text-coconut"
+                      : "text-coconut/72 hover:bg-coconut/6 hover:text-coconut"
+                  }`}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+                  transition={{ delay: 0.06 + index * 0.04 }}
+                >
+                  <span className="font-heading text-2xl">{t(section)}</span>
+                  <FeatureGlyph name="arrow" className="h-4 w-4" />
+                </motion.button>
+              );
+            })}
+          </div>
+
+          <motion.button
+            type="button"
+            onClick={() => scrollToSection("booking")}
+            className="cta-primary metal-button mt-6 w-full justify-between px-5 py-4 text-[0.72rem]"
+            initial={{ opacity: 0, y: 18 }}
+            animate={mobileOpen ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{ delay: 0.28 }}
+          >
+            <span>{t("book")}</span>
+            <FeatureGlyph name="arrow" className="h-4 w-4" />
+          </motion.button>
+        </motion.div>
       </motion.div>
     </>
   );

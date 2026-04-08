@@ -1,4 +1,4 @@
-import { NextIntlClientProvider, useMessages } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { locales } from "@/i18n/config";
 import Navigation from "@/components/layout/Navigation";
@@ -23,8 +23,11 @@ export default async function LocaleLayout({
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <SmoothScroll>
+        <a href="#main-content" className="skip-link">
+          Skip to content
+        </a>
         <Navigation />
-        <main>{children}</main>
+        <main id="main-content">{children}</main>
         <Footer />
       </SmoothScroll>
     </NextIntlClientProvider>

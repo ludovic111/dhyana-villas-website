@@ -17,22 +17,22 @@ export default function AnimatedSection({
   direction = "up",
 }: AnimatedSectionProps) {
   const directionOffset = {
-    up: { y: 40 },
-    down: { y: -40 },
-    left: { x: 40 },
-    right: { x: -40 },
+    up: { y: 28 },
+    down: { y: -28 },
+    left: { x: 32 },
+    right: { x: -32 },
   };
 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, ...directionOffset[direction] }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
+      initial={{ opacity: 0, ...directionOffset[direction], scale: 0.985 }}
+      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-12% 0px" }}
       transition={{
-        duration: 0.7,
+        duration: 0.82,
         delay,
-        ease: [0.25, 0.4, 0.25, 1],
+        ease: [0.23, 1, 0.32, 1],
       }}
     >
       {children}

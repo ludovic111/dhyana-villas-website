@@ -1,97 +1,103 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
+import { useLocale, useTranslations } from "next-intl";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import SectionIntro from "@/components/ui/SectionIntro";
+import FeatureGlyph from "@/components/ui/FeatureGlyph";
 import { villas } from "@/data/villas";
-import type { Locale } from "@/i18n/config";
 
-const specIcons: Record<string, string> = {
-  area: "📐",
-  bedrooms: "🛏️",
-  bathrooms: "🚿",
-  pool: "🏊",
-  kitchen: "🍳",
-  wifi: "📶",
-  ac: "❄️",
-  garden: "🌿",
-};
+const villaSpecs = [
+  ["area", "bedrooms", "pool"],
+  ["bathrooms", "kitchen", "wifi"],
+  ["garden", "ac", "pool"],
+] as const;
+
+const glyphs = {
+  area: "area",
+  bedrooms: "bedrooms",
+  bathrooms: "bathrooms",
+  pool: "pool",
+  kitchen: "kitchen",
+  wifi: "wifi",
+  ac: "ac",
+  garden: "garden",
+} as const;
 
 export default function VillasSection() {
   const t = useTranslations("villas");
-  const locale = useLocale() as Locale;
+  const locale = useLocale() as "en" | "fr" | "th";
 
   return (
-    <section id="villas" className="bg-sand/30 py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <AnimatedSection className="text-center">
-          <h2 className="font-heading text-3xl font-bold text-volcanic sm:text-4xl md:text-5xl">
-            {t("title")}
-          </h2>
-          <p className="mt-4 font-accent text-xl text-drift">{t("subtitle")}</p>
-          <div className="mx-auto mt-6 h-px w-16 bg-gold" />
-        </AnimatedSection>
+    <section id="villas" className="section-shell">
+      <div className="site-frame">
+        <SectionIntro label={t("title")} title={t("title")} body={t("subtitle")} />
 
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {villas.map((villa, i) => (
-            <AnimatedSection key={villa.id} delay={0.15 * i}>
-              <motion.div
-                className="group overflow-hidden rounded-2xl bg-coconut shadow-lg transition-shadow hover:shadow-2xl"
-                whileHover={{ y: -8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={villa.image}
-                    alt={villa.name}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-volcanic/40 to-transparent" />
-                  <h3 className="absolute bottom-4 left-6 font-heading text-2xl font-bold text-coconut">
-                    {villa.name}
-                  </h3>
-                </div>
+        <div className="mt-12 grid gap-12">
+          {villas.map((villa, index) => {
+            const reverse = index % 2 === 1;
 
-                <div className="p-6">
-                  <p className="text-sm leading-relaxed text-drift">
-                    {villa.description[locale]}
-                  </p>
-
-                  <div className="mt-6 grid grid-cols-4 gap-2">
-                    {(["area", "bedrooms", "bathrooms", "pool"] as const).map(
-                      (spec) => (
-                        <div
-                          key={spec}
-                          className="flex flex-col items-center gap-1 rounded-lg bg-silk p-2 text-center"
-                        >
-                          <span className="text-lg">{specIcons[spec]}</span>
-                          <span className="text-[0.65rem] font-medium text-drift">
-                            {t(`specs.${spec}`)}
-                          </span>
+            return (
+              <AnimatedSection key={villa.id}>
+                <article className="grid gap-6 border-t border-jungle/10 pt-8 lg:grid-cols-[1fr_1fr] lg:items-center">
+                  <div className={reverse ? "lg:order-2" : ""}>
+                    <div className="surface-panel-strong overflow-hidden rounded-[2.3rem] p-3">
+                      <div className="relative aspect-[16/11] overflow-hidden rounded-[1.8rem]">
+                        <Image
+                          src={villa.image}
+                          alt={villa.name}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 48vw"
+                          className="object-cover"
+                        />
+                        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(12,20,17,0.03)_0%,rgba(12,20,17,0.1)_48%,rgba(12,20,17,0.62)_100%)]" />
+                        <div className="absolute left-4 top-4 rounded-full border border-coconut/12 bg-nocturne/70 px-3 py-2 text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-gold/78 backdrop-blur-xl">
+                          {String(index + 1).padStart(2, "0")}
                         </div>
-                      )
-                    )}
+                      </div>
+                    </div>
                   </div>
 
-                  <motion.button
-                    className="mt-6 w-full rounded-full bg-jungle-light py-3 font-body text-sm font-semibold text-coconut transition-colors hover:bg-jungle"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() =>
-                      document
-                        .getElementById("booking")
-                        ?.scrollIntoView({ behavior: "smooth" })
-                    }
-                  >
-                    {t("cta")}
-                  </motion.button>
-                </div>
-              </motion.div>
-            </AnimatedSection>
-          ))}
+                  <div className={`flex flex-col justify-center ${reverse ? "lg:order-1" : ""}`}>
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.24em] text-gold-deep">
+                      Residence {String(index + 1).padStart(2, "0")}
+                    </p>
+                    <h3 className="mt-4 font-heading text-5xl leading-none text-volcanic">
+                      {villa.name}
+                    </h3>
+                    <p className="mt-5 max-w-2xl text-lg leading-relaxed text-drift">
+                      {villa.description[locale]}
+                    </p>
+
+                    <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                      {villaSpecs[index].map((spec) => (
+                        <div
+                          key={spec}
+                          className="pill-chip justify-start rounded-[1.25rem] px-4 py-3"
+                        >
+                          <FeatureGlyph name={glyphs[spec]} className="h-4 w-4 text-jungle-light" />
+                          <span>{t(`specs.${spec}`)}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="ghost-link mt-8"
+                      onClick={() =>
+                        document
+                          .getElementById("booking")
+                          ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                      }
+                    >
+                      <span>{t("cta")}</span>
+                      <FeatureGlyph name="arrow" className="h-4 w-4" />
+                    </button>
+                  </div>
+                </article>
+              </AnimatedSection>
+            );
+          })}
         </div>
       </div>
     </section>

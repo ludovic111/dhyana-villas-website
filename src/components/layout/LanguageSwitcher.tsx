@@ -7,18 +7,35 @@ import { motion, AnimatePresence } from "framer-motion";
 import { locales } from "@/i18n/config";
 
 const localeLabels: Record<string, string> = {
-  en: "EN",
-  fr: "FR",
-  th: "TH",
+  en: "English",
+  fr: "Francais",
+  th: "Thai",
 };
 
-const localeFlags: Record<string, string> = {
-  en: "🇬🇧",
-  fr: "🇫🇷",
-  th: "🇹🇭",
-};
+function GlobeIcon() {
+  return (
+    <svg
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="9" />
+      <path d="M3 12h18" />
+      <path d="M12 3c2.6 2.8 4 5.8 4 9s-1.4 6.2-4 9c-2.6-2.8-4-5.8-4-9s1.4-6.2 4-9Z" />
+    </svg>
+  );
+}
 
-export default function LanguageSwitcher({ variant = "light" }: { variant?: "light" | "dark" }) {
+export default function LanguageSwitcher({
+  variant = "light",
+}: {
+  variant?: "light" | "dark";
+}) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -42,16 +59,22 @@ export default function LanguageSwitcher({ variant = "light" }: { variant?: "lig
     setOpen(false);
   }
 
-  const textColor = variant === "light" ? "text-coconut" : "text-volcanic";
+  const buttonClass =
+    variant === "light"
+      ? "border-coconut/14 bg-coconut/8 text-coconut hover:bg-coconut/14"
+      : "border-jungle/10 bg-coconut/74 text-volcanic hover:bg-coconut";
 
   return (
     <div ref={ref} className="relative">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
-        className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${textColor} hover:bg-white/10`}
+        className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.18em] backdrop-blur-md ${buttonClass}`}
+        aria-expanded={open}
+        aria-label="Change language"
       >
-        <span>{localeFlags[locale]}</span>
-        <span>{localeLabels[locale]}</span>
+        <GlobeIcon />
+        <span>{locale.toUpperCase()}</span>
       </button>
 
       <AnimatePresence>
@@ -60,19 +83,24 @@ export default function LanguageSwitcher({ variant = "light" }: { variant?: "lig
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="absolute right-0 top-full mt-2 overflow-hidden rounded-xl bg-coconut shadow-xl ring-1 ring-sand"
+            transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+            className="surface-panel absolute right-0 top-full mt-3 min-w-40 overflow-hidden rounded-[1.35rem] p-1"
           >
             {locales.map((l) => (
               <button
                 key={l}
+                type="button"
                 onClick={() => switchLocale(l)}
-                className={`flex w-full items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-sand ${
-                  l === locale ? "bg-sand font-semibold text-jungle" : "text-drift"
+                className={`flex w-full items-center justify-between rounded-[1rem] px-3 py-2.5 text-left transition-colors ${
+                  l === locale
+                    ? "bg-jungle text-coconut"
+                    : "text-drift hover:bg-sand/60"
                 }`}
               >
-                <span>{localeFlags[l]}</span>
-                <span>{localeLabels[l]}</span>
+                <span className="text-sm font-medium">{localeLabels[l]}</span>
+                <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em]">
+                  {l}
+                </span>
               </button>
             ))}
           </motion.div>
