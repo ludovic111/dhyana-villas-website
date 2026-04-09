@@ -60,7 +60,7 @@ export default function HeroSection() {
           style={prefersReducedMotion ? undefined : { y: mediaY, scale: imageScale }}
         >
           <Image
-            src="https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=1920&h=1280&fit=crop&q=80"
+            src="/images/hero-pool.jpg"
             alt="Dhyana Villas private pool framed by tropical greenery"
             fill
             priority

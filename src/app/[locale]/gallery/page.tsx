@@ -13,9 +13,10 @@ const categories: (GalleryCategory | "all")[] = [
   "all",
   "pool",
   "rooms",
+  "living",
   "garden",
   "kitchen",
-  "views",
+  "details",
 ];
 
 export default function GalleryPage() {

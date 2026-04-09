@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw booking photos source
+/booking-photos
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

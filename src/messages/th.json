@@ -47,7 +47,8 @@
       "rooms": "ห้องพัก",
       "garden": "สวน",
       "kitchen": "ครัว",
-      "views": "วิว"
+      "living": "ห้องนั่งเล่น",
+      "details": "รายละเอียด"
     }
   },
   "experience": {

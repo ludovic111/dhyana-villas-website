@@ -47,7 +47,8 @@
       "rooms": "Chambres",
       "garden": "Jardin",
       "kitchen": "Cuisine",
-      "views": "Vues"
+      "living": "Salon",
+      "details": "Détails"
     }
   },
   "experience": {

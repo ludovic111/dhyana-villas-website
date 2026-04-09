@@ -1,4 +1,4 @@
-export type GalleryCategory = "pool" | "rooms" | "garden" | "kitchen" | "views";
+export type GalleryCategory = "pool" | "rooms" | "garden" | "kitchen" | "living" | "details";
 
 export interface GalleryImage {
   id: string;
@@ -12,30 +12,47 @@ export interface GalleryImage {
 
 export const galleryImages: GalleryImage[] = [
   // Pool
-  { id: "pool-1", src: "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=800&h=600&fit=crop", alt: "Private pool with tropical garden", category: "pool", width: 800, height: 600, featured: true },
-  { id: "pool-2", src: "https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?w=800&h=600&fit=crop", alt: "Pool loungers at sunset", category: "pool", width: 800, height: 600 },
-  { id: "pool-3", src: "https://images.unsplash.com/photo-1540541338287-41700207dee6?w=800&h=600&fit=crop", alt: "Crystal clear pool water", category: "pool", width: 800, height: 600 },
-  { id: "pool-4", src: "https://images.unsplash.com/photo-1573052905904-34ad8c27f0cc?w=600&h=800&fit=crop", alt: "Pool at night", category: "pool", width: 600, height: 800 },
+  { id: "pool-1", src: "/images/hero-pool.jpg", alt: "Pool with open-air living pavilion", category: "pool", width: 800, height: 600, featured: true },
+  { id: "pool-2", src: "/images/pool-tropical.jpg", alt: "Turquoise pool surrounded by tropical plants", category: "pool", width: 600, height: 800 },
+  { id: "pool-3", src: "/images/pool-loungers.jpg", alt: "Poolside loungers with parasol", category: "pool", width: 600, height: 800 },
+  { id: "pool-4", src: "/images/pool-garden-overview.jpg", alt: "Garden lounge and pool overview", category: "pool", width: 800, height: 600 },
+  { id: "pool-5", src: "/images/pool-from-living.jpg", alt: "Pool view from the living area", category: "pool", width: 800, height: 600 },
 
   // Rooms
-  { id: "room-1", src: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&h=600&fit=crop", alt: "Master bedroom with king bed", category: "rooms", width: 800, height: 600, featured: true },
-  { id: "room-2", src: "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=800&h=600&fit=crop", alt: "Elegant bedroom interior", category: "rooms", width: 800, height: 600 },
-  { id: "room-3", src: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop", alt: "Spacious living room", category: "rooms", width: 800, height: 600 },
-  { id: "room-4", src: "https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&h=800&fit=crop", alt: "Bathroom with walk-in shower", category: "rooms", width: 600, height: 800 },
+  { id: "room-1", src: "/images/villa-lotus.jpg", alt: "Villa Lotus master bedroom", category: "rooms", width: 800, height: 600, featured: true },
+  { id: "room-2", src: "/images/villa-bamboo.jpg", alt: "Villa Bamboo master bedroom", category: "rooms", width: 800, height: 600 },
+  { id: "room-3", src: "/images/room-lotus-wardrobe.jpg", alt: "Villa Lotus bedroom with wardrobe", category: "rooms", width: 800, height: 600 },
+  { id: "room-4", src: "/images/room-bamboo-ensuite.jpg", alt: "Villa Bamboo bedroom with en-suite", category: "rooms", width: 800, height: 600 },
+  { id: "room-5", src: "/images/room-coral-accents.jpg", alt: "Colorful bedroom with coral accents", category: "rooms", width: 800, height: 600 },
+  { id: "room-6", src: "/images/room-pillows-pendants.jpg", alt: "Bed with artisan pillows and pendant lights", category: "rooms", width: 800, height: 600 },
+  { id: "room-7", src: "/images/bathroom-openair.jpg", alt: "Open-air bathroom with tropical plants", category: "rooms", width: 800, height: 600, featured: true },
+  { id: "room-8", src: "/images/bathroom-tadelakt.jpg", alt: "Blue tadelakt rainfall shower", category: "rooms", width: 800, height: 600 },
+  { id: "room-9", src: "/images/bathroom-vanity.jpg", alt: "Concrete vanity with backlit mirror", category: "rooms", width: 800, height: 600 },
+  { id: "room-10", src: "/images/bathroom-bedroom-view.jpg", alt: "Bathroom with view into bedroom", category: "rooms", width: 800, height: 600 },
 
   // Garden
-  { id: "garden-1", src: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&h=600&fit=crop", alt: "Lush tropical garden", category: "garden", width: 800, height: 600, featured: true },
-  { id: "garden-2", src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&h=600&fit=crop", alt: "Garden path with tropical plants", category: "garden", width: 800, height: 600 },
-  { id: "garden-3", src: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=800&fit=crop", alt: "Tropical flowers", category: "garden", width: 600, height: 800 },
+  { id: "garden-1", src: "/images/garden-mandala.jpg", alt: "Mandala entrance with garden path", category: "garden", width: 800, height: 600, featured: true },
+  { id: "garden-2", src: "/images/garden-stepping-stones.jpg", alt: "Stepping stone path through tropical garden", category: "garden", width: 600, height: 800 },
+  { id: "garden-3", src: "/images/garden-palms.jpg", alt: "Lush garden with palm trees", category: "garden", width: 600, height: 800 },
+  { id: "garden-4", src: "/images/garden-lounge.jpg", alt: "Garden lounge with stepping stones", category: "garden", width: 800, height: 600 },
+  { id: "garden-5", src: "/images/garden-canopy.jpg", alt: "Shaded loungers under tropical canopy", category: "garden", width: 600, height: 800 },
 
   // Kitchen
-  { id: "kitchen-1", src: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=800&h=600&fit=crop", alt: "Fully equipped modern kitchen", category: "kitchen", width: 800, height: 600, featured: true },
-  { id: "kitchen-2", src: "https://images.unsplash.com/photo-1600585152220-90363fe7e115?w=800&h=600&fit=crop", alt: "Kitchen dining area", category: "kitchen", width: 800, height: 600 },
+  { id: "kitchen-1", src: "/images/kitchen-island.jpg", alt: "Concrete kitchen island with wooden accents", category: "kitchen", width: 800, height: 600, featured: true },
+  { id: "kitchen-2", src: "/images/kitchen-garden-view.jpg", alt: "Open kitchen with garden view", category: "kitchen", width: 800, height: 600 },
+  { id: "kitchen-3", src: "/images/kitchen-counter.jpg", alt: "Kitchen counter with fresh fruits", category: "kitchen", width: 800, height: 600 },
+  { id: "kitchen-4", src: "/images/kitchen-overview.jpg", alt: "Fully equipped kitchen overview", category: "kitchen", width: 800, height: 600 },
 
-  // Views
-  { id: "views-1", src: "https://images.unsplash.com/photo-1506665531195-3566af2b4dfa?w=800&h=600&fit=crop", alt: "Mountain view from terrace", category: "views", width: 800, height: 600, featured: true },
-  { id: "views-2", src: "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&h=600&fit=crop", alt: "Sunset over the ocean", category: "views", width: 800, height: 600 },
-  { id: "views-3", src: "https://images.unsplash.com/photo-1468413253725-0d5181091126?w=800&h=600&fit=crop", alt: "Tropical beach nearby", category: "views", width: 800, height: 600 },
+  // Living
+  { id: "living-1", src: "/images/living-colorful-sofa.jpg", alt: "Bamboo sofa with colorful African-print cushions", category: "living", width: 800, height: 600, featured: true },
+  { id: "living-2", src: "/images/living-indigo-lounge.jpg", alt: "Indigo shibori lounge with orchids", category: "living", width: 800, height: 600 },
+  { id: "living-3", src: "/images/living-terrace.jpg", alt: "Covered terrace overlooking the garden", category: "living", width: 800, height: 600 },
+  { id: "living-4", src: "/images/living-cozy.jpg", alt: "Cozy lounge with wine and snacks", category: "living", width: 800, height: 600 },
+
+  // Details
+  { id: "details-1", src: "/images/detail-arch-window.jpg", alt: "Garden view through arch window with candles", category: "details", width: 800, height: 600 },
+  { id: "details-2", src: "/images/detail-porthole.jpg", alt: "Round porthole window with zen decor", category: "details", width: 800, height: 600 },
+  { id: "details-3", src: "/images/detail-halfmoon.jpg", alt: "Half-moon window with tropical plants and candles", category: "details", width: 800, height: 600 },
 ];
 
 export const featuredImages = galleryImages.filter((img) => img.featured);
